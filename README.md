@@ -45,7 +45,7 @@
 | 大東山 · 爛頭營 / Sunset Peak · Sunset Villa | 大嶼山 | 6.9 | 515 | 3h05 | 中等 |
 | 鳳凰山 / Lantau Peak | 大嶼山 | 5.2 | 560 | 2h45 | 挑戰 |
 | 太平山盧吉道 / Victoria Peak · Lugard Road | 港島 | 4.1 | 140 | 1h15 | 輕鬆 |
-| 嘉頓山 / Garden Hill | 九龍 | 2.1 | 55 | 0h35 | 輕鬆 |
+| 嘉頓山 / Garden Hill | 九龍 | 2.1 | 55 | 35 分 | 輕鬆 |
 | 梧桐寨瀑布 / Ng Tung Chai Waterfalls | 新界東 | 4.2 | 380 | 1h55 | 容易 |
 | 鶴咀 / Cape D'Aguilar | 港島 | 4.7 | 145 | 1h20 | 輕鬆 |
 | 釣魚翁 / High Junk Peak | 新界東 | 5.9 | 210 | 2h00 | 中等 |
@@ -62,7 +62,7 @@
 
 - **Next.js 15.5.29**（App Router）＋ **React 19** ＋ **TypeScript**（strict）＋ **Tailwind CSS**
 - **Leaflet 1.9**（`dynamic(..., { ssr: false })`，避免 SSR 時 window 問題）
-- **Recharts 2.15**
+- **Recharts 2.15**（海拔剖面圖）
 - 天文台 API 由 Server Component 直接 fetch（`next: { revalidate: 600 }`），另設 `/api/weather` 供前端手動更新；10 分鐘 ISR。
 - `overrides: { "postcss": "^8.5.33" }`，`npm audit` 保持 0 vulnerabilities。
 - 零後端、零資料庫、零追蹤、零廣告；可直接部署 Vercel。
