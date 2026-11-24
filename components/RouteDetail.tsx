@@ -1,7 +1,7 @@
 "use client";
 
 import { dict } from "@/lib/i18n";
-import { DIFFICULTY_LABEL, TAG_LABEL, formatTime, routeTime } from "@/lib/routes";
+import { DIFFICULTY_LABEL, REGION_LABEL, TAG_LABEL, formatTime, routeTime } from "@/lib/routes";
 import { formatMinutes, sunsetMinutes } from "@/lib/sun";
 import type { Lang, Route } from "@/lib/types";
 import { ArrowDownIcon, ArrowUpIcon, ClockIcon, LeafIcon, PinIcon, ShareIcon } from "./icons";
@@ -48,7 +48,7 @@ export default function RouteDetail({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-amber">
-              {route.region} · {route.district[lang]}
+              {REGION_LABEL[route.region]?.[lang] ?? route.region} · {route.district[lang]}
             </p>
             <h2 data-testid="detail-title" className="mt-1 font-serif text-[26px] leading-tight tracking-tight text-forest sm:text-[30px]">{route.name[lang]}</h2>
           </div>

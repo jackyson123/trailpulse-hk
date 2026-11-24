@@ -17,9 +17,9 @@ const FALLBACK: WeatherNow = {
   stale: true,
 };
 
-async function getJson<T>(dataType: string): Promise<T | null> {
+async function getJson<T>(dataType: string, lang: "tc" | "en" = "tc"): Promise<T | null> {
   try {
-    const res = await fetch(`${BASE}?dataType=${dataType}&lang=tc`, {
+    const res = await fetch(`${BASE}?dataType=${dataType}&lang=${lang}`, {
       next: { revalidate: 600 },
       signal: AbortSignal.timeout(7000),
       headers: { "User-Agent": "TrailPulseHK/1.0" },
@@ -62,27 +62,37 @@ type Fnd = {
 };
 
 export async function getWeather(): Promise<WeatherNow> {
-  const [rhr, warn, flw, fnd] = await Promise.all([
+  const [rhr, warn, flw, fnd, rhrEn, warnEn, flwEn] = await Promise.all([
     getJson<RhrRead>("rhrread"),
     getJson<WarnSum>("warnsum"),
     getJson<Flw>("flw"),
     getJson<Fnd>("fnd"),
+    getJson<RhrRead>("rhrread", "en"),
+    getJson<WarnSum>("warnsum", "en"),
+    getJson<Flw>("flw", "en"),
   ]);
 
   if (!rhr) return FALLBACK;
 
   const warnings: Warning[] = [];
   if (warn) {
-    for (const value of Object.values(warn)) {
+    for (const [key, value] of Object.entries(warn)) {
       if (value && value.code && value.actionCode !== "CANCEL") {
-        warnings.push({ code: value.code, name: value.name ?? value.code, actionCode: value.actionCode });
+        warnings.push({
+          code: value.code,
+          name: value.name ?? value.code,
+          nameEn: warnEn?.[key]?.name ?? warnEn?.[value.code]?.name,
+          actionCode: value.actionCode,
+        });
       }
     }
   }
 
   const tempData = rhr.temperature?.data ?? [];
+  const tempDataEn = rhrEn?.temperature?.data ?? [];
   const humidity = rhr.humidity?.data?.[0]?.value ?? null;
   const uv = rhr.uvindex?.data?.[0] ?? null;
+  const uvEn = rhrEn?.uvindex?.data?.[0] ?? null;
   const rainfall = (rhr.rainfall?.data ?? []).map((r) => ({ place: r.place, max: r.max }));
 
   const days = (fnd?.weatherForecast ?? []).slice(0, 5).map((d) => ({
@@ -96,15 +106,18 @@ export async function getWeather(): Promise<WeatherNow> {
 
   return {
     updatedAt: rhr.updateTime ?? "",
-    temperature: tempData.map((t) => ({ place: t.place, value: t.value })),
+    temperature: tempData.map((t, i) => ({ place: t.place, placeEn: tempDataEn[i]?.place, value: t.value })),
     humidity,
-    uv: uv ? { value: uv.value, desc: uv.desc } : null,
+    uv: uv ? { value: uv.value, desc: uv.desc, descEn: uvEn?.desc } : null,
     rainfall,
     icon: rhr.icon ?? [],
     warnings,
     situation: flw?.generalSituation || rhr.warningMessage?.join(" ") || "",
+    situationEn: flwEn?.generalSituation ?? "",
     forecastDesc: flw?.forecastDesc ?? "",
+    forecastDescEn: flwEn?.forecastDesc ?? "",
     outlook: flw?.outlook ?? "",
+    outlookEn: flwEn?.outlook ?? "",
     days,
     stale: false,
   };

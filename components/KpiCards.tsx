@@ -45,15 +45,22 @@ export function conditionLabel(kind: ReturnType<typeof weatherKind>, lang: Lang)
 export function WeatherCard({ weather, lang }: { weather: WeatherNow; lang: Lang }) {
   const c = dict[lang];
   const kind = weatherKind(weather.icon[0]);
-  const temp = weather.temperature.find((t) => t.place === "香港天文台")?.value ?? weather.temperature[0]?.value ?? 24;
+  const station = weather.temperature.find((t) => t.place === "香港天文台") ?? weather.temperature[0];
+  const temp = station?.value ?? 24;
   const rain = weather.rainfall.reduce((m, r) => Math.max(m, r.max ?? 0), 0);
+  const placeLabel = lang === "zh" ? "香港天文台" : station?.placeEn || "Hong Kong Observatory";
+  const uvDesc = lang === "en" ? weather.uv?.descEn || weather.uv?.desc : weather.uv?.desc;
+  const rawForecast = lang === "en" ? weather.forecastDescEn || weather.forecastDesc : weather.forecastDesc;
+  const forecastDesc = rawForecast.split(lang === "en" ? ". " : "。")[0];
 
   return (
     <article className="card relative flex flex-col justify-between overflow-hidden p-4 sm:p-5">
       <div className="flex items-start justify-between">
         <div>
           <p className="label">{c.weather}</p>
-          <p className="mt-1 text-[10px] text-ink/40">香港天文台 · {weather.updatedAt ? weather.updatedAt.slice(11, 16) : "—"}</p>
+          <p className="mt-1 text-[10px] text-ink/40">
+            {placeLabel} · {weather.updatedAt ? weather.updatedAt.slice(11, 16) : "—"}
+          </p>
         </div>
         <span className="rounded-full bg-forest/[0.06] px-2 py-0.5 text-[10px] font-semibold text-forest">
           {conditionLabel(kind, lang)}
@@ -77,7 +84,7 @@ export function WeatherCard({ weather, lang }: { weather: WeatherNow; lang: Lang
           <dt className="text-[10px] text-ink/45">{c.uv}</dt>
           <dd className="num mt-0.5 text-[13px] font-semibold text-ink">
             {weather.uv?.value ?? "—"}
-            {weather.uv ? <span className="ml-1 text-[10px] font-normal text-ink/45">{weather.uv.desc}</span> : null}
+            {weather.uv ? <span className="ml-1 text-[10px] font-normal text-ink/45">{uvDesc}</span> : null}
           </dd>
         </div>
         <div>
@@ -91,8 +98,8 @@ export function WeatherCard({ weather, lang }: { weather: WeatherNow; lang: Lang
 
       <p className="mt-2.5 line-clamp-1 text-[10.5px] text-ink/50">
         {weather.days[0]
-          ? `${c.forecast} ${weather.days[0].min ?? "–"}–${weather.days[0].max ?? "–"}°C · ${(weather.forecastDesc || weather.days[0].psr || "").split("。")[0]}`
-          : (weather.forecastDesc || c.allClear).split("。")[0]}
+          ? `${c.forecast} ${weather.days[0].min ?? "–"}–${weather.days[0].max ?? "–"}°C · ${forecastDesc || weather.days[0].psr || ""}`
+          : forecastDesc || c.allClear}
       </p>
     </article>
   );

@@ -55,19 +55,22 @@ export type Route = {
   waypointElevations: { name: string; elev: number; offM: number }[];
 };
 
-export type Warning = { code: string; name: string; actionCode?: string };
+export type Warning = { code: string; name: string; nameEn?: string; actionCode?: string };
 
 export type WeatherNow = {
   updatedAt: string;
-  temperature: { place: string; value: number }[];
+  temperature: { place: string; placeEn?: string; value: number }[];
   humidity: number | null;
-  uv: { value: number; desc: string } | null;
+  uv: { value: number; desc: string; descEn?: string } | null;
   rainfall: { place: string; max: number }[];
   icon: number[];
   warnings: Warning[];
   situation: string;
+  situationEn?: string;
   forecastDesc: string;
+  forecastDescEn?: string;
   outlook: string;
+  outlookEn?: string;
   days: { date: string; week: string; min: number | null; max: number | null; icon: number | null; psr: string }[];
   stale: boolean;
 };

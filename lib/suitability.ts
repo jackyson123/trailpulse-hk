@@ -73,7 +73,7 @@ export function suitability(weather: WeatherNow, now = new Date()): Suitability 
     if (penalty) {
       score -= penalty;
       const text = WARNING_TEXT[warning.code];
-      reasons.push(text ?? { zh: `${warning.name}生效`, en: `${warning.name} in force` });
+      reasons.push(text ?? { zh: `${warning.name}生效`, en: `${warning.nameEn || warning.name} in force` });
     }
   }
 

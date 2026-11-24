@@ -187,15 +187,27 @@ export default function TrailPulseApp({ initialWeather }: { initialWeather: Weat
         {weather.warnings.length > 0 ? (
           <div className="mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-amber/30 bg-amber/[0.07] px-3 py-2 text-[11px] leading-snug text-[#8A4A06]">
             <span className="font-bold">⚠</span>
-            <span className="font-semibold">{weather.warnings.map((w) => w.name).join(" · ")}</span>
-            {weather.situation ? <span className="hidden text-[#8A4A06]/70 sm:inline">— {weather.situation}</span> : null}
+            <span className="font-semibold">
+              {weather.warnings.map((w) => (lang === "en" ? w.nameEn || w.name : w.name)).join(" · ")}
+            </span>
+            {(lang === "en" ? weather.situationEn || weather.situation : weather.situation) ? (
+              <span className="hidden text-[#8A4A06]/70 sm:inline">
+                — {lang === "en" ? weather.situationEn || weather.situation : weather.situation}
+              </span>
+            ) : null}
           </div>
         ) : null}
 
-        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-          <WeatherCard weather={weather} lang={lang} />
-          <SunsetCard lang={lang} now={now} />
-          <SuitabilityCard data={today} lang={lang} />
+        <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 md:grid-cols-3">
+          <div className="w-[86%] min-w-[270px] shrink-0 snap-start sm:w-auto sm:min-w-0">
+            <WeatherCard weather={weather} lang={lang} />
+          </div>
+          <div className="w-[86%] min-w-[270px] shrink-0 snap-start sm:w-auto sm:min-w-0">
+            <SunsetCard lang={lang} now={now} />
+          </div>
+          <div className="w-[86%] min-w-[270px] shrink-0 snap-start sm:w-auto sm:min-w-0">
+            <SuitabilityCard data={today} lang={lang} />
+          </div>
         </div>
 
         <div className="mt-4 grid gap-4 md:grid-cols-[300px_minmax(0,1fr)] lg:mt-5 lg:grid-cols-[352px_minmax(0,1fr)] lg:gap-5">
