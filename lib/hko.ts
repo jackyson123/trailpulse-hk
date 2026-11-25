@@ -20,7 +20,7 @@ const FALLBACK: WeatherNow = {
 async function getJson<T>(dataType: string, lang: "tc" | "en" = "tc"): Promise<T | null> {
   try {
     const res = await fetch(`${BASE}?dataType=${dataType}&lang=${lang}`, {
-      next: { revalidate: 600 },
+      cache: "no-store",
       signal: AbortSignal.timeout(7000),
       headers: { "User-Agent": "TrailPulseHK/1.0" },
     });

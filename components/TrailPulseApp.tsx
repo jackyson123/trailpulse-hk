@@ -142,7 +142,10 @@ export default function TrailPulseApp({ initialWeather }: { initialWeather: Weat
   const refresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      const res = await fetch("/api/weather", { cache: "no-store" });
+      const res = await fetch(`/api/weather?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: { Pragma: "no-cache", "Cache-Control": "no-cache" },
+      });
       if (res.ok) {
         const data = (await res.json()) as WeatherNow;
         if (!data.stale) setWeather(data);

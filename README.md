@@ -63,7 +63,7 @@
 - **Next.js 15.5.29**（App Router）＋ **React 19** ＋ **TypeScript**（strict）＋ **Tailwind CSS**
 - **Leaflet 1.9**（`dynamic(..., { ssr: false })`，避免 SSR 時 window 問題）
 - **Recharts 2.15**（海拔剖面圖）
-- 天文台 API 由 Server Component 直接 fetch（`next: { revalidate: 600 }`），另設 `/api/weather` 供前端手動更新；10 分鐘 ISR。
+- 天文台 API 由 Server Component 即時 fetch（`cache: "no-store"`），另設 `/api/weather`（`dynamic = "force-dynamic"`、`Cache-Control: no-store`）供前端手動更新；頁面同 API 都唔會被靜態預渲染或 CDN 快取，永遠顯示最新讀數。
 - `overrides: { "postcss": "^8.5.33" }`，`npm audit` 保持 0 vulnerabilities。
 - 零後端、零資料庫、零追蹤、零廣告；可直接部署 Vercel。
 
