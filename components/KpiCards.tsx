@@ -2,7 +2,7 @@
 
 import { dict } from "@/lib/i18n";
 import { gradeLabel } from "@/lib/suitability";
-import { civilTwilightEndMinutes, formatMinutes, sunsetMinutes, sunriseMinutes } from "@/lib/sun";
+import { civilTwilightEndMinutes, formatMinutes, hkMinutes, sunsetMinutes, sunriseMinutes } from "@/lib/sun";
 import type { Lang, Suitability, WeatherNow } from "@/lib/types";
 import { weatherKind } from "@/lib/hko";
 import { CloudIcon, DropletIcon, FogIcon, PartlyIcon, RainIcon, StormIcon, SunIcon, SunsetIcon, SunriseIcon } from "./icons";
@@ -111,7 +111,7 @@ export function SunsetCard({ lang, now }: { lang: Lang; now: Date | null }) {
   const sunset = sunsetMinutes(d);
   const sunrise = sunriseMinutes(d);
   const civil = civilTwilightEndMinutes(d);
-  const current = d.getHours() * 60 + d.getMinutes();
+  const current = hkMinutes(d);
   const left = sunset - current;
   const progress = Math.max(0, Math.min(1, (current - sunrise) / Math.max(1, sunset - sunrise)));
 

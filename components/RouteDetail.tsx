@@ -2,7 +2,7 @@
 
 import { dict } from "@/lib/i18n";
 import { DIFFICULTY_LABEL, REGION_LABEL, TAG_LABEL, formatTime, routeTime } from "@/lib/routes";
-import { formatMinutes, sunsetMinutes } from "@/lib/sun";
+import { formatMinutes, hkMinutes, sunsetMinutes } from "@/lib/sun";
 import type { Lang, Route } from "@/lib/types";
 import { ArrowDownIcon, ArrowUpIcon, ClockIcon, LeafIcon, PinIcon, ShareIcon } from "./icons";
 
@@ -39,7 +39,8 @@ export default function RouteDetail({
           d.setMinutes(d.getMinutes() + minutes);
           return d;
         })();
-  const buffer = now === null || finish === null ? null : sunsetMinutes(now) - (finish.getHours() * 60 + finish.getMinutes());
+  const finishMinutes = finish === null ? null : hkMinutes(finish);
+  const buffer = now === null || finishMinutes === null ? null : sunsetMinutes(now) - finishMinutes;
   const tight = buffer !== null && buffer < 45;
 
   return (
@@ -100,10 +101,10 @@ export default function RouteDetail({
               <ClockIcon className="h-3.5 w-3.5" />
               {c.estFinish}
             </p>
-            {finish ? (
+            {finish && finishMinutes !== null ? (
               <p className="text-[12px] text-ink/75">
                 <span className="num font-semibold text-forest">
-                  {String(finish.getHours()).padStart(2, "0")}:{String(finish.getMinutes()).padStart(2, "0")}
+                  {String(Math.floor(finishMinutes / 60)).padStart(2, "0")}:{String(finishMinutes % 60).padStart(2, "0")}
                 </span>
                 <span className="mx-1.5 text-line">|</span>
                 {c.daylightBuffer}

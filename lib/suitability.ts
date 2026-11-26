@@ -1,6 +1,6 @@
 import type { Bi, Suitability, WeatherNow } from "./types";
 import { maxRainfall } from "./hko";
-import { formatMinutes, minutesUntilSunset, sunsetMinutes } from "./sun";
+import { formatMinutes, hkMinutes, minutesUntilSunset, sunsetMinutes } from "./sun";
 
 const SEVERITY: Record<string, number> = {
   WTS: 45,
@@ -93,7 +93,7 @@ export function suitability(weather: WeatherNow, now = new Date()): Suitability 
 
   const buffer = 4 * 60 + 45;
   const latest = sunsetMinutes(now) - buffer;
-  const latestStart = latest > now.getHours() * 60 + now.getMinutes() ? formatMinutes(latest) : null;
+  const latestStart = latest > hkMinutes(now) ? formatMinutes(latest) : null;
 
   return { score, grade, reasons: reasons.slice(0, 3), latestStart };
 }

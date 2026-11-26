@@ -9,9 +9,26 @@ const rad = (d: number) => (d * Math.PI) / 180;
 const deg = (r: number) => (r * 180) / Math.PI;
 const norm = (v: number, max: number) => ((v % max) + max) % max;
 
+// Everything here works in Hong Kong wall-clock time, so the server (UTC) and
+// the visitor's browser agree on the date, sunrise, sunset and daylight left.
+type HkParts = { year: number; month: number; day: number; hours: number; minutes: number; seconds: number };
+
+function hkParts(date: Date): HkParts {
+  const shifted = new Date(date.getTime() + TZ_OFFSET * 3600000);
+  return {
+    year: shifted.getUTCFullYear(),
+    month: shifted.getUTCMonth(),
+    day: shifted.getUTCDate(),
+    hours: shifted.getUTCHours(),
+    minutes: shifted.getUTCMinutes(),
+    seconds: shifted.getUTCSeconds(),
+  };
+}
+
 function dayOfYear(date: Date) {
-  const start = Date.UTC(date.getFullYear(), 0, 0);
-  const diff = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - start;
+  const p = hkParts(date);
+  const start = Date.UTC(p.year, 0, 0);
+  const diff = Date.UTC(p.year, p.month, p.day) - start;
   return diff / 86400000;
 }
 
@@ -65,8 +82,15 @@ export function sunsetDate(date = new Date()): Date {
   return d;
 }
 
+/** Minutes after Hong Kong midnight, whole minutes. */
+export function hkMinutes(date = new Date()): number {
+  const p = hkParts(date);
+  return p.hours * 60 + p.minutes;
+}
+
 export function minutesUntilSunset(now = new Date()): number {
   const sunset = sunsetMinutes(now);
-  const current = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
+  const p = hkParts(now);
+  const current = p.hours * 60 + p.minutes + p.seconds / 60;
   return Math.round(sunset - current);
 }
